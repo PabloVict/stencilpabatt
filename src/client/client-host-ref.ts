@@ -90,7 +90,7 @@ export const isMemberInElement = (elm: any, memberName: string) => memberName in
  * @param node an element or document
  * @returns true if the node is attached to the DOM
  */
-function isNodeAttached(node: Element | Document) {
+function isNodeAttached(node: Node) {
   return (
     node === document ||
     node === document.documentElement ||
@@ -113,7 +113,7 @@ export const hostRefCleanup = () => {
      * it is an instance of an HTMLElement and
      * it is not attached to the DOM anymore
      */
-    if (key instanceof HTMLElement && !isNodeAttached(key)) {
+    if (key instanceof Node && !isNodeAttached(key)) {
       keysToRemove.push(key);
     }
 
