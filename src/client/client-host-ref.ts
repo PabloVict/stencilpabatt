@@ -50,7 +50,7 @@ export const registerInstance = (lazyInstance: any, hostRef: d.HostRef) => {
   hostRef.$lazyInstance$ = lazyInstance;
   hostRefKeys.push(lazyInstance);
   return hostRefs.set(lazyInstance, hostRef);
-}
+};
 
 /**
  * Register a host element for a Stencil component, setting up various metadata
@@ -91,11 +91,7 @@ export const isMemberInElement = (elm: any, memberName: string) => memberName in
  * @returns true if the node is attached to the DOM
  */
 function isNodeAttached(node: Node) {
-  return (
-    node === document ||
-    node === document.documentElement ||
-    document.contains(node)
-  );
+  return node === document || node === document.documentElement || document.contains(node);
 }
 
 export const hostRefCleanup = () => {
@@ -108,7 +104,8 @@ export const hostRefCleanup = () => {
    * Iterate through your `hostRefKeys` and determine if the key should be removed.
    * We consider a key to be removed if:
    */
-  for (const key of hostRefKeys) {  // You need to maintain these keys separately
+  for (const key of hostRefKeys) {
+    // You need to maintain these keys separately
     /**
      * it is an instance of an HTMLElement and
      * it is not attached to the DOM anymore
@@ -124,10 +121,8 @@ export const hostRefCleanup = () => {
     const elem = hostRefs.get(key as d.HostElement);
     if (
       elem &&
-      (
-        (elem.$hostElement$ && !isNodeAttached(elem.$hostElement$)) ||
-        (elem.$ancestorComponent$ && !isNodeAttached(elem.$ancestorComponent$))
-      )
+      ((elem.$hostElement$ && !isNodeAttached(elem.$hostElement$)) ||
+        (elem.$ancestorComponent$ && !isNodeAttached(elem.$ancestorComponent$)))
     ) {
       keysToRemove.push(key);
     }
