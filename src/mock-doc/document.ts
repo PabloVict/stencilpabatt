@@ -5,20 +5,20 @@ import { MockDocumentFragment } from './document-fragment';
 import { MockDocumentTypeNode } from './document-type-node';
 import { createElement, createElementNS, MockBaseElement } from './element';
 import { resetEventListeners } from './event';
-import { MockElement, MockHTMLElement, MockTextNode, resetElement } from './node';
+import { MockElement, MockHTMLElement, MockNode, MockTextNode, resetElement } from './node';
 import { parseHtmlToFragment } from './parse-html';
 import { parseDocumentUtil } from './parse-util';
 import { MockWindow } from './window';
 
-export class MockDocument extends MockHTMLElement {
+export class MockDocument extends MockNode {
   defaultView: any;
   cookie: string;
   referrer: string;
 
-  constructor(html: string | boolean | null = null, win: any = null) {
-    super(null, null);
-    this.nodeName = NODE_NAMES.DOCUMENT_NODE;
-    this.nodeType = NODE_TYPES.DOCUMENT_NODE;
+
+  constructor(html: string | boolean = null, win: any = null) {
+    super(null, NODE_TYPES.DOCUMENT_NODE, NODE_NAMES.DOCUMENT_NODE, null);
+
     this.defaultView = win;
     this.cookie = '';
     this.referrer = '';
@@ -42,16 +42,14 @@ export class MockDocument extends MockHTMLElement {
     }
   }
 
-  override get dir() {
+  get dir() {
     return this.documentElement.dir;
   }
-  override set dir(value: string) {
+  set dir(value: string) {
     this.documentElement.dir = value;
   }
 
-  override get localName(): never {
-    throw new Error('Unimplemented');
-  }
+
 
   get location() {
     if (this.defaultView != null) {
@@ -225,14 +223,14 @@ export class MockDocument extends MockHTMLElement {
     return getElementsByName(this, elmName.toLowerCase());
   }
 
-  override get title() {
+  get title() {
     const title = this.head.childNodes.find((elm) => elm.nodeName === 'TITLE') as MockElement;
     if (title != null && typeof title.textContent === 'string') {
       return title.textContent.trim();
     }
     return '';
   }
-  override set title(value: string) {
+  set title(value: string) {
     const head = this.head;
     let title = head.childNodes.find((elm) => elm.nodeName === 'TITLE') as MockElement;
     if (title == null) {
@@ -297,7 +295,7 @@ const DOC_KEY_KEEPERS = new Set([
   '_shadowRoot',
 ]);
 
-export function getElementById(elm: MockElement, id: string): MockElement {
+export function getElementById(elm: MockElement | MockDocument, id: string): MockElement {
   const children = elm.children;
   for (let i = 0, ii = children.length; i < ii; i++) {
     const childElm = children[i];
@@ -312,7 +310,7 @@ export function getElementById(elm: MockElement, id: string): MockElement {
   return null;
 }
 
-function getElementsByName(elm: MockElement, elmName: string, foundElms: MockElement[] = []) {
+function getElementsByName(elm: MockElement | MockDocument, elmName: string, foundElms: MockElement[] = []) {
   const children = elm.children;
   for (let i = 0, ii = children.length; i < ii; i++) {
     const childElm = children[i];
